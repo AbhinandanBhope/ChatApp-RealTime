@@ -29,9 +29,10 @@ router.get('/login/:Name/:password/:gmail', usersController.LoginUser);
 router.get('/password/forgotpassword/:Gmail',userauthenticate.authenticate,forgotController.ForgotPass)
 router.get('/password/resetpassword/:id',forgotController.ResetPass);
 router.get('/password/updatepassword/:resetpasswordid', forgotController.updatepassword);
-
-
-
+router.get('/list',usersController.onlineUser);
+router.get('/logout',usersController.logout);
+router.post('/addMessage',userauthenticate.authenticate,usersController.postMessage);  
+router.get('/ShowMessage',userauthenticate.authenticate,usersController.ShowMessage);
 
 
     

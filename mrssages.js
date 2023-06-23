@@ -1,26 +1,21 @@
 const  Sequelize  = require('sequelize');
 const sequelize = require('./database');
 
-const User = sequelize.define('user',{
+const Message = sequelize.define('Messages',{
     id:{
         type:Sequelize.INTEGER,
         autoIncrement: true,
         allowNull: false,
         primaryKey:true
     },
-    Name:Sequelize.STRING,
     
-    Gmail: {
+    
+    Message: {
         type:Sequelize.STRING,
         allowNull: false,
-        unique: true, // Make Gmail column unique
+         // Make Gmail column unique
       },
-    password:{
-        type: Sequelize.STRING,
-  allowNull: false
-    }
-    ,
-    active:  true
+
 
     
     
@@ -28,4 +23,4 @@ const User = sequelize.define('user',{
 });
 
 
-module.exports = User;
+module.exports =  Message;

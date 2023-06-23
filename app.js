@@ -12,9 +12,10 @@ const app = express();
 //app.use(cors())
 
 const adminRoutes = require('./routes/admin');
-var cors = require('cors');
+const cors = require('cors');
 const sequelize = require('./database');
 const User = require('./User');
+const Message = require('./mrssages');
 
 
 const forgotPassword = require('./forgotPassword');
@@ -84,7 +85,8 @@ app.use(express.json());
   
   User.hasMany(forgotPassword);
 forgotPassword.belongsTo(User);
-
+User.hasMany(Message);
+Message.belongsTo(User);
 app.use((req ,res) =>{
   res.sendFile(path.join(__dirname,`${req.url}`));
 
@@ -98,7 +100,7 @@ app.use((req ,res) =>{
 
 
 
-app.use(bodyParser.urlencoded({ extended: false}));
+app.use(bodyParser.urlencoded({ extended: true}));
 sequelize.sync().then((result) => {
 
   console.log(result)

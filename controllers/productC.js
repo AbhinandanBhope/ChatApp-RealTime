@@ -1,5 +1,6 @@
 const User = require('../User');
 const bcrypt = require('bcrypt');
+const Message = require('../mrssages')
 
 const jwt = require('jsonwebtoken');
 const sequelize = require('../database');
@@ -30,7 +31,8 @@ const postUser = async function (req, res, next) {
     const data = await User.create({
       Name: Name1,
       Gmail: gmail1,
-      password: hashedPassword
+      password: hashedPassword ,
+      active: false
     }, { transaction });
 
     await transaction.commit();
@@ -48,7 +50,21 @@ function generateToken(id ) {
   return jwt.sign({userId:id } ,'key')
 }
 var userId =0;
-
+const logout = async function (req ,res ,next) {
+  try {
+    
+    const activeUpdate = await User.update(
+      { active: false }, 
+      { where: { id: userId } }
+    );
+    console.log(activeUpdate);
+    
+    
+  } catch (error) {
+    
+  }
+  
+}
  
 
 const LoginUser = async function (req, res, next) {
@@ -65,8 +81,17 @@ const LoginUser = async function (req, res, next) {
         Gmail: gmail1,
         Name:Name1,
         
+        
       }
     }); 
+    
+    const activeUpdate = await User.update(
+      { active: true }, 
+      { where: { id: user[0].id } }
+    );
+    console.log(activeUpdate);
+    
+
     userId = user[0].id;
     if(user.length != 0){
     
@@ -110,14 +135,94 @@ const LoginUser = async function (req, res, next) {
 
   
 
+
     
 
     
   
     
 
+const onlineUser =  async function(req, res)  {
+  try{
+  
+    await User.findAll({
+      where:{ active: true}
+    }).then((result) => {
+      const rows = result; 
+      res.json(rows);
+      
+    })}
+  
+    catch(err)  {
+      console.log(err)
+      
+    };
+    
+  };
+
+    
+const postMessage = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  
+  try {
+    const u = userId;
+    
+    const Message2 = req.body.Message1;
     
 
+    if (Message2.length==0) {
+      res.status(500).json({ error: 'Please Write something' });
+    }
+
+    
+    
+    
+    const data = await Message.create({
+      Message:Message2,
+      userId:u
+    
+    }, { transaction });
+
+    await transaction.commit();
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+
+
+    
+const ShowMessage = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  
+  try {
+    const u2 = userId;
+    
+    
+
+    
+    
+    
+    const data = await Message.findAll({
+      where:{ userId: u2}
+      
+    
+    }, { transaction });
+
+    await transaction.commit();
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
 
       
       
@@ -127,6 +232,6 @@ const LoginUser = async function (req, res, next) {
 
 
 module.exports = {
-  postUser, LoginUser 
+  postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage
   
 };
