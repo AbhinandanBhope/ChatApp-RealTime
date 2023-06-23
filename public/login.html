@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"/>
+    <link rel="stylesheet" href="./CSS/login.css">
+</head>
+<body>
+  
+  <div class="container">
+    <div class="wrapper">
+      <div class="title"><span> Login Form</span></div>
+      <form action="#">
+        <div class="row">
+          <i class="fas fa-user"></i>
+          <input  name="Name" id="Name" type="text" placeholder="Name" required>
+        </div>
+        <div class="row">
+          <i class="fas fa-user"></i>
+          <input  name="Gmail" id="Gmail"  type="text" placeholder="Email or Phone" required>
+        </div>
+        <div class="row">
+          <i class="fas fa-lock"></i>
+          <input  name="PassWord" id="PassWord" type="password" placeholder="Password" required>
+        </div>
+        <div class="pass"><a href="./forgotpassword.html">Forgot password?</a></div>
+        
+          <div class="row button">
+            <input type="submit" value="Login"  onclick="login(event)" >
+          
+        </div>
+        <div class="row button">
+            <input type="submit" value="SignUp" onclick="Signup()">
+          
+            </div>
+        
+        
+      </form>
+    </div>
+
+    
+        
+            
+      
+       
+    
+ <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+ 
+ <script >
+
+  async function login(event) {
+    event.preventDefault();
+  
+    const Name1 = document.getElementById('Name').value;
+            const gmail1 = document.getElementById('Gmail').value;
+            const password = document.getElementById('PassWord').value;
+            if( gmail1 == '' || Name1 =='' || password =='') {
+              document.getElementById('Gmail').placeholder =  'Cannot be empty';
+              document.getElementById('PassWord').placeholder =  'Cannot be empty';
+              document.getElementById('Name').placeholder =  'Cannot be empty';
+  
+            }
+            console.log(gmail1);
+            
+     const obj2 ={
+      Name1,
+      password,
+      gmail1
+     };
+     localStorage.setItem('NoItemserPage','5');
+  
+    
+  
+      
+     axios.get(`http://localhost:3000/login/${Name1}/${password}/${gmail1}`)
+  .then(response => {
+  
+  const obj = response.data;
+  if(response.status ===201){
+    alert(`Hi ${ Name1} ur login success`)
+    localStorage.setItem('token',response.data.token);
+   // window.location.href="file:///C:/Bokkingapp/BookingApp/forntend.html";
+   window.location.href="./loginsuccess.html";
+  }
+  
+  
+  //showOutput(obj) ;
+  console.log(response.status);
+  
+  
+  
+  
+  
+  })
+  .catch(error => {
+  
+  if (error.response && error.response.status === 404) {
+    alert(`one or more fields error please try again`);
+    
+  } 
+  else if (error.response && error.response.status === 400) {
+    alert(` Incorrect password`);
+    
+  } 
+  else {
+    alert('An error occurred while logging in');
+    console.log(error);
+  }
+  
+  
+  
+
+  console.log(error);
+  console.log("hellow!");
+  });
+  }
+   function Signup() {
+    window.location.href="./forntend.html";
+  
+    
+   }
+  
+  
+    
+    
+  
+  
+  </script>
+  
+   
+    
+    
+
+
+        
+    
+
+    
+</body>
+</html>
