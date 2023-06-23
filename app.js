@@ -22,7 +22,11 @@ const forgotPassword = require('./forgotPassword');
 const routes =require('./routes/admin');
 app.use(routes);
 
-app.use(cors());
+app.use(cors({
+  origin:"*",
+  credentials:true,
+  methods: "GET, POST, PUT, DELETE"
+}));
 
 
 //app.use(morgan('combined'));
