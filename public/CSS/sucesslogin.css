@@ -126,4 +126,21 @@ margin: 10px;
     margin-bottom: 10px;
   }
   
+  .box {
+    width: 200px;
+    height: auto;
+    overflow: auto;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+  }
+  
+  .box ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+  }
+  
+  .box li {
+    padding: 5px;
+  }
   

@@ -166,6 +166,11 @@ const postMessage = async function (req, res, next) {
   
   try {
     const u = userId;
+    const UserM = await User.findAll({
+      where:{ id: u}
+      
+    })  
+      console.log( UserM);
     
     const Message2 = req.body.Message1;
     
@@ -179,7 +184,8 @@ const postMessage = async function (req, res, next) {
     
     const data = await Message.create({
       Message:Message2,
-      userId:u
+      userId:u ,
+      Name: UserM[0].Name
     
     }, { transaction });
 
@@ -208,10 +214,7 @@ const ShowMessage = async function (req, res, next) {
     
     
     const data = await Message.findAll({
-      where:{ userId: u2}
-      
-    
-    }, { transaction });
+}, { transaction });
 
     await transaction.commit();
 

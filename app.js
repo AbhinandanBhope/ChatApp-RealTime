@@ -100,7 +100,7 @@ app.use((req ,res) =>{
 
 
 
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 sequelize.sync().then((result) => {
 
   console.log(result)

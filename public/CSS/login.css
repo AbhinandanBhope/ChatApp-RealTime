@@ -107,3 +107,9 @@ form .button input:hover{
 form .signup-link a:hover{
   text-decoration: underline;
 }
+.box {
+  width: 200px;
+  height: 200px;
+  background-color: #f1f1f1;
+  border: 1px solid #ccc;
+}

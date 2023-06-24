@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="CSS/sucesslogin.css">
+</head>
+
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://i0.wp.com/zenatta.com/wp-content/uploads/2020/08/expense-256.png?fit=322%2C322&ssl=1" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+                Chat App
+              </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Dropdown
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="#">Action</a></li>
+                  <li><a class="dropdown-item" href="#">Another action</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" id="logout" href="#">logout</a></li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link">Disabled</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search">
+              
+            </form>
+          </div>
+        </div>
+      </nav>
+      
+
+        
+            
+    
+          
+          
+        
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  
+  
+
+  <center>
+    
+  </div>
+  </center>
+  <div class="space"></div>
+  
+  <center>
+ 
+</center>
+<div class="a"></div>
+<center>
+  
+  <button type="button" onclick="UserExpense(event)" class="btn btn-outline-success"></button>
+  <button type="button" id="buyprim" class="btn btn-outline-success"></button>
+  <button onclick="download()" class="btn btn-outline-success "id="downloadexpense"></button>
+  <button onclick="Showdownload()" class="btn btn-outline-success "id="downloadexpense"></button>
+  <button type="button" id="Show" class="btn btn-outline-success"></button>
+  <br><br>
+  <H1>Online</H1>
+  <div id="box" class="box">
+    
+  </div>
+  <br>
+
+  <label for="Rows">Rows Per Page:</label>
+  <select name="row" id="Row">
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+  </select>
+  <br><br>
+</form>
+  
+
+    
+  
+
+
+    
+<h1>Messages</h1>
+<div id="Pro">
+  <table id="ChatTable" class="table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Message</th>
+      
+        
+        
+      </tr>
+    </thead>
+    <tbody id="ChatTableBody">
+      
+    </tbody>
+  </table>
+
+</div>
+
+
+
+    </tbody>
+    
+  <div class="input-group input-group-lg">
+      <span class="input-group-text" id="inputGroup-sizing-lg">Message</span>
+      <input id="Message" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" placeholder="0.0$">
+    </div>
+    
+  <input type="submit" class="button" value="Send" onclick="addMessage()">
+  </table>
+</div>
+
+
+    
+
+   
+</center>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  showonlineUsers()
+  ShowMessage();
+  
+  async function showonlineUsers() {
+      
+      axios.get('http://localhost:3000/list')
+.then(response => {
+  
+  const obj2 = response.data;
+  
+  console.log(obj2);
+
+
+  
+  const box2 = document.getElementById('box');
+         box2.innerHTML = '';
+         if (box2.style.display === 'none') {
+          box2.style.display = 'block';
+        } 
+          let i =1;
+          obj2.forEach(item => {
+           
+          
+            
+  
+              const li = document.createElement('h4');
+              const iTEMMS = document.createTextNode( i+" "+item.Name );
+  
+              i++;
+  
+  
+              
+              
+              
+              
+              
+              const Space = document.createElement('div');
+              Space.classList.add =("distance")
+              li.appendChild(iTEMMS);
+              
+              
+              
+              
+             
+              li.appendChild(Space);
+              box2.appendChild(li);
+              
+          }); 
+  
+})
+.catch(error => {
+  
+  console.log(error);
+});
+  }
+  function logout() {
+    
+    console.log('User logged out');
+    window.location.href="./login.html";
+    
+    axios.get('http://localhost:3000/logout')
+.then(response => {
+  
+  window.location.href="./login.html";
+console.log(response);
+})
+.catch(error => {
+  
+  console.log(error);
+});
+    
+  }
+
+  const logoutButton = document.getElementById('logout');
+  logoutButton.onclick = logout;
+  
+  async function addMessage() {
+  const Message1 = document.getElementById('Message').value;
+  console.log(Message);
+  const objM = {
+    Message1
+  };
+  const token = localStorage.getItem('token');
+
+  try {
+    const response = await axios.post('http://localhost:3000/addMessage', objM, {
+      headers: {
+        'Authorization': token
+      }
+    });
+    
+    const obj2 = response.data;
+    console.log(obj2);
+    ShowMessage();
+    // Perform any further operations with the response data
+  } catch (error) {
+    console.error(error);
+    // Handle the error appropriately
+  }
+}
+
+async function ShowMessage() {
+  
+  
+  const token = localStorage.getItem('token');
+
+  try {
+    const response = await axios.get('http://localhost:3000/ShowMessage', {
+      headers: {
+        'Authorization': token
+      }
+    });
+    
+    const obj2 = response.data.data;
+    console.log(obj2);
+    showonPage(obj2);
+    // Perform any further operations with the response data
+  } catch (error) {
+    console.error(error);
+    // Handle the error appropriately
+  }
+}
+function showonPage(obj2){
+  
+  console.log(obj2);
+  const token = localStorage.getItem('token');
+  const decode = parseJwt(token);
+  
+    
+    
+  
+    
+  
+    const tableBody = document.getElementById('ChatTableBody');
+    
+     
+    
+    
+  
+    
+    tableBody.innerHTML = '';
+  
+    
+    obj2.forEach((item) => {
+      let textName = undefined;
+      if(item.userId == decode.userId){
+         textName = document.createTextNode("You")
+
+      }
+      else{
+       textName = document.createTextNode(item.Name)
+      };
+      const row = document.createElement('tr');
+  
+      
+      const idCell = document.createElement('td');
+    
+  
+      
+      
+      
+      idCell.appendChild(textName);
+  
+      
+  
+      const categoryCell = document.createElement('td');
+      
+      const category = document.createTextNode(item.Message)
+      
+      categoryCell.appendChild(category);
+  
+    
+    
+      
+  
+      
+      
+      row.appendChild(idCell)
+      
+      row.appendChild(categoryCell);
+      
+      
+  
+      
+      tableBody.appendChild(row);
+  
+    })
+  }
+  
+  function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  
+    return JSON.parse(jsonPayload);
+  }
+  
+  
+
+
+
+
+
+</script>
+
+
+
+  
+    
+</body>
+</html>

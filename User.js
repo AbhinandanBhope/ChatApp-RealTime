@@ -20,7 +20,12 @@ const User = sequelize.define('user',{
   allowNull: false
     }
     ,
-    active:  true
+    
+    active: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false
+    },
+    
 
     
     
