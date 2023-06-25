@@ -32,7 +32,7 @@ router.get('/password/updatepassword/:resetpasswordid', forgotController.updatep
 router.get('/list',usersController.onlineUser);
 router.get('/logout',usersController.logout);
 router.post('/addMessage',userauthenticate.authenticate,usersController.postMessage);  
-router.get('/ShowMessage',userauthenticate.authenticate,usersController.ShowMessage);
+router.get('/ShowMessage/:messageId',userauthenticate.authenticate,usersController.ShowMessage);
 
 
     

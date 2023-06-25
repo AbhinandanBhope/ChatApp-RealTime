@@ -78,11 +78,13 @@
   
     
   
+
       
      axios.get(`http://localhost:3000/login/${Name1}/${password}/${gmail1}`)
   .then(response => {
   
   const obj = response.data;
+  localStorage.setItem('MessageId' ,undefined);
   if(response.status ===201){
     alert(`Hi ${ Name1} ur login success`)
     localStorage.setItem('token',response.data.token);

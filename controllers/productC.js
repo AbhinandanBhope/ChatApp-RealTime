@@ -1,6 +1,7 @@
 const User = require('../User');
 const bcrypt = require('bcrypt');
 const Message = require('../mrssages')
+const { Op } = require('sequelize');
 
 const jwt = require('jsonwebtoken');
 const sequelize = require('../database');
@@ -205,6 +206,7 @@ const postMessage = async function (req, res, next) {
 const ShowMessage = async function (req, res, next) {
   const transaction = await sequelize.transaction();
   
+  const messageId = req.params.messageId;
   try {
     const u2 = userId;
     
@@ -213,7 +215,14 @@ const ShowMessage = async function (req, res, next) {
     
     
     
-    const data = await Message.findAll({
+    const data = await Message.findAll({ 
+      
+       where: {id: {
+        [Op.gt]: messageId
+      }
+    }
+      
+
 }, { transaction });
 
     await transaction.commit();

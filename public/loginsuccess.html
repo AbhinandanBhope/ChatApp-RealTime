@@ -145,10 +145,10 @@
 <script>
   showonlineUsers()
   ShowMessage();
-  setInterval(() => {
-    ShowMessage();
+  //setInterval(() => {
+   // ShowMessage();
     
-  }, 3000);
+ // }, 3000);
   
   async function showonlineUsers() {
       
@@ -251,18 +251,52 @@ console.log(response);
 async function ShowMessage() {
   
   
+
+  
   const token = localStorage.getItem('token');
+  let messId  = localStorage.getItem('MessageId');
+  if(messId == undefined){
+    messId = 0;
+  }
 
   try {
-    const response = await axios.get('http://localhost:3000/ShowMessage', {
+    const response = await axios.get(`http://localhost:3000/ShowMessage/${messId}`, {
       headers: {
         'Authorization': token
       }
     });
     
     const obj2 = response.data.data;
+    console.log(localStorage.getItem('array'));
+
+    
+  if(localStorage.getItem('array') === null){
+    var array =[];
+     
+      array = array.concat(obj2);
+     localStorage.setItem('array', JSON.stringify(array))
+     console.log(JSON.stringify(array));
+    
+  } 
+    let array2 =  JSON.parse(localStorage.getItem('array'));
+    
+    if (Array.isArray(obj2) && obj2.length > 0) {
+      for (let i = 0; i < obj2.length; i++) {
+        const messageExists = array2.some(item => item.id === obj2[i].id);
+        if (!messageExists) {
+          array2.push(obj2[i]);
+        }
+      }
+    }
+    
+    localStorage.setItem('array', JSON.stringify(array2))
+    const array1 = localStorage.getItem('array');
+
+
+
     console.log(obj2);
-    showonPage(obj2);
+    console.log(array1);
+    showonPage( JSON.parse(array1));
     // Perform any further operations with the response data
   } catch (error) {
     console.error(error);
@@ -332,7 +366,7 @@ function showonPage(obj2){
   
       
       tableBody.appendChild(row);
-  
+       localStorage.setItem('MessageId',item.id); 
     })
   }
   
