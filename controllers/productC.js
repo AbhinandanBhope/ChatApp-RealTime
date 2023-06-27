@@ -1,8 +1,9 @@
 const User = require('../User');
 const bcrypt = require('bcrypt');
 const Message = require('../mrssages')
+const Groups = require('../groups');
 const { Op } = require('sequelize');
-
+const usergroup1 =  require('../Usergroups');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../database');
 require('dotenv').config();
@@ -166,6 +167,7 @@ const postMessage = async function (req, res, next) {
   const transaction = await sequelize.transaction();
   
   try {
+    const groupId = req.params.groupId;
     const u = userId;
     const UserM = await User.findAll({
       where:{ id: u}
@@ -185,8 +187,10 @@ const postMessage = async function (req, res, next) {
     
     const data = await Message.create({
       Message:Message2,
+      Name: UserM[0].Name,
       userId:u ,
-      Name: UserM[0].Name
+      groupId: groupId
+    
     
     }, { transaction });
 
@@ -207,9 +211,10 @@ const ShowMessage = async function (req, res, next) {
   const transaction = await sequelize.transaction();
   
   const messageId = req.params.messageId;
+  const gropid = req.params.groupId;
   try {
     const u2 = userId;
-    
+  
     
 
     
@@ -219,7 +224,10 @@ const ShowMessage = async function (req, res, next) {
       
        where: {id: {
         [Op.gt]: messageId
-      }
+      },
+      groupId :gropid
+
+      
     }
       
 
@@ -239,11 +247,212 @@ const ShowMessage = async function (req, res, next) {
       
       
 
+    
+const creatgroup = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  
+  try {
+    const u = userId;
+    const UserM = await User.findAll({
+      where:{ id: u}
+      
+    })  
+      console.log( UserM);
+    
+    const GroupN = req.body. GroupName1;
+    
+
+    if (GroupN.length==0) {
+      res.status(500).json({ error: 'Please Write something' });
+    }
+
+    
+    
+    
+    const data = await Groups.create({
+      
+      userId:u ,
+      adminid: UserM[0].id ,
+      groupName: GroupN
+    }, { transaction });
+    await transaction.commit();
+    const data2 = await usergroup1.create({
+      
+      isAdmin:true ,
+       
+      GroupName:GroupN,
+      memberName:UserM[0].Name,
+      userId: UserM[0].id,
+
+      groupId: data.id
+    })
+
+    
+    console.log(data2);
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+
+const showgroups = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  
+  const messageId = req.params.messageId;
+  try {
+    const u2 = userId;
+    
+    
+
+    
+    
+    
+    const data = await usergroup1.findAll({ 
+      where:{userId:u2}
+}, { transaction });
+
+    await transaction.commit();
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+
+    
+const addMember = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  const GroupN =req.body.GroupName1;
+  const uName = req.body.MemberName1;
+  console.log(GroupN);
+  
+  try {
+ 
+    const UserM = await User.findAll({
+      where:{ Name: uName}
+      
+    })  
+      console.log( UserM);
+    
+    
+    
+
+    if (uName.length==0 || GroupN == null) {
+      res.status(401).json({ error: 'User Not found' });
+    }
+    const gObj = await Groups.findAll({
+      where:{ id: GroupN}
+      
+    })  
+    
+    console.log("myObj "+gObj[0].groupName);
+    
+    const data4 = await usergroup1.findAll({
+      where:{ 
+        userId: UserM[0].id ,
+        groupId: GroupN
+      }
+    })
+  if(data4.isAdmin == false){
+    res.status(402);
+  }
+    const data = await usergroup1.create({
+      
+      isAdmin:false ,
+      GroupName: gObj[0].groupName ,
+      memberName:UserM[0].Name,
+      userId: UserM[0].id ,
+      groupId: GroupN
+    }, { transaction });
+    await transaction.commit();
+    
+
+    
+    
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+    
+const removeMember = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  const GroupN1 = req.params.GroupName2;
+  const uName1 = req.params.MemberName2;
+  console.log("req"+req.body);
+  console.log(JSON.stringify(req.body));
+  
+  try {
+ 
+    const UserMd = await User.findAll({
+      where:{ Name: uName1}
+      
+    })  
+      console.log( UserMd);
+    
+    
+    
+
+    if (uName1.length==0 || GroupN1== null) {
+      res.status(401).json({ error: 'User Not found' });
+    }
+    const gObjd = await Groups.findAll({
+      where:{ id: GroupN1}
+      
+    })  
+    const data4 = await usergroup1.findAll({
+      where:{ 
+        userId: UserMd[0].id ,
+        groupId: GroupN1
+      }
+    })
+  if(data4.isAdmin == false){
+    res.status(402);
+  }
+
+    console.log("myObj "+gObjd[0].groupName);
+    
+    
+    const data = await usergroup1.destroy({
+      where:{
+        
+        GroupName: gObjd[0].groupName ,
+        memberName:UserMd[0].Name,
+        userId: UserMd[0].id ,
+        groupId: GroupN1}
+      
+    }, { transaction });
+    await transaction.commit();
+    
+
+    
+    
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+
 
 
 
 
 module.exports = {
-  postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage
+  postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage ,creatgroup ,showgroups ,addMember ,removeMember
   
 };

@@ -74,23 +74,31 @@
 </center>
 <div class="a"></div>
 <center>
-  
-  <button type="button" onclick="UserExpense(event)" class="btn btn-outline-success"></button>
-  <button type="button" id="buyprim" class="btn btn-outline-success"></button>
   <button onclick="CreatGroup()" class="btn btn-outline-success "id="downloadexpense">CreatGroup</button>
-  <button onclick="Showdownload()" class="btn btn-outline-success "id="downloadexpense"></button>
-  <button type="button" id="Show" class="btn btn-outline-success"></button>
+  <button type="button" id="Admin" onclick="UserExpense(event)" class="btn btn-outline-success">Make Admin</button>
+  <button onclick="RemoveMembers()" type="button" id="Remove" class="btn btn-outline-success">Remove Members</button>
+
+  <div class ="space"></div>
+  
+  <button onclick="addMember()" type="button" id="ADD" class="btn btn-outline-success">Add Members</button>
   <br><br>
   
   <br>
 </form>
 <h1>Chat App 	😀</h1>
+<br><br>
+<H1>Group members</H1>
+<div id="box" class="box">
+  
+</div>
+<br>
+
 <div id="Pro">
   <table id="ChatTable" class="table">
     <thead>
       <tr>
-        <th scope="col"><h1>Groups</h1></th>
-        <th scope="col"><h1>Actions</h1></th>
+        <th scope="col"><h1>Name</h1></th>
+        <th scope="col"><h1>Message</h1></th>
         
       
         
@@ -107,12 +115,18 @@
 
 
     </tbody>
+    <div class="input-group input-group-lg">
+        <span class="input-group-text" id="inputGroup-sizing-lg">Text</span>
+        <input id="Message" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" placeholder="Text">
+      </div>
+      
+
   
 
     
   
 
-
+      <input type="submit" class="button" value="Send" onclick="addMessage()">
     
     
 
@@ -121,13 +135,14 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
- // showonlineUsers()
-  ShowGroups();
- // ShowMessage();
+  showonlineUsers()
+
+  ShowMessage();
   //setInterval(() => {
    // ShowMessage();
     
  // }, 3000);
+ 
   
   async function showonlineUsers() {
       
@@ -181,37 +196,21 @@
   console.log(error);
 });
   }
-  function logout() {
-    
-    console.log('User logged out');
-    window.location.href="./login.html";
-    
-    axios.get('http://localhost:3000/logout')
-.then(response => {
   
-  window.location.href="./login.html";
-console.log(response);
-})
-.catch(error => {
-  
-  console.log(error);
-});
-    
-  }
 
-  const logoutButton = document.getElementById('logout');
-  logoutButton.onclick = logout;
   
- /* async function addMessage() {
+  async function addMessage() {
   const Message1 = document.getElementById('Message').value;
+  const groupId = localStorage.getItem('groupId');
   console.log(Message);
   const objM = {
-    Message1
+    Message1,
+    groupId
   };
   const token = localStorage.getItem('token');
-
+  
   try {
-    const response = await axios.post('http://localhost:3000/addMessage', objM, {
+    const response = await axios.post(`http://localhost:3000/addMessage/${groupId}`, objM, {
       headers: {
         'Authorization': token
       }
@@ -228,61 +227,113 @@ console.log(response);
 }
 
 async function ShowMessage() {
+  const admin = JSON.parse(localStorage.getItem('isAdmin'));
+  console.log(admin);
+  if( admin == false ){
+    
+    document.getElementById('Admin').style.visibility="hidden";
+    document.getElementById("Remove").style.visibility= "hidden";
+    document.getElementById("ADD").style.visibility= "hidden";
+  }
+  
   
   
 
   
   const token = localStorage.getItem('token');
   let messId  = localStorage.getItem('MessageId');
-  if(messId == undefined){
+  let  groupId = localStorage.getItem('groupId');
     messId = 0;
-  }
+  
 
   try {
-    const response = await axios.get(`http://localhost:3000/ShowMessage/${messId}`, {
+    const response = await axios.get(`http://localhost:3000/ShowMessage/${messId}/${groupId}`, {
       headers: {
         'Authorization': token
       }
     });
     
     const obj2 = response.data.data;
-    console.log(localStorage.getItem('array'));
-
     
-  if(localStorage.getItem('array') === null){
-    var array =[];
-     
-      array = array.concat(obj2);
-     localStorage.setItem('array', JSON.stringify(array))
-     console.log(JSON.stringify(array));
-    
-  } 
-    let array2 =  JSON.parse(localStorage.getItem('array'));
-    
-    if (Array.isArray(obj2) && obj2.length > 0) {
-      for (let i = 0; i < obj2.length; i++) {
-        const messageExists = array2.some(item => item.id === obj2[i].id);
-        if (!messageExists) {
-          array2.push(obj2[i]);
-        }
-      }
-    }
-    
-    localStorage.setItem('array', JSON.stringify(array2))
-    const array1 = localStorage.getItem('array');
 
 
 
     console.log(obj2);
-    console.log(array1);
-    showonPage( JSON.parse(array1));
+    console.log(obj2);
+    showonPage( obj2);
     // Perform any further operations with the response data
   } catch (error) {
     console.error(error);
     // Handle the error appropriately
   }
-} */
+} 
+function showonPage(obj2){
+  
+  console.log(obj2);
+  const token = localStorage.getItem('token');
+  const decode = parseJwt(token);
+  
+  
+    
+    
+  
+    
+  
+    const tableBody = document.getElementById('ChatTableBody');
+    
+     
+    
+    
+  
+    
+    tableBody.innerHTML = '';
+  
+    
+    obj2.forEach((item) => {
+      let textName = undefined;
+      if(item.userId == decode.userId){
+         textName = document.createTextNode("You")
 
+      }
+      else{
+       textName = document.createTextNode(item.Name)
+      };
+      const row = document.createElement('tr');
+  
+      
+      const idCell = document.createElement('td');
+    
+  
+      
+      
+      
+      idCell.appendChild(textName);
+  
+      
+  
+      const categoryCell = document.createElement('td');
+      
+      const category = document.createTextNode(item.Message)
+      
+      categoryCell.appendChild(category);
+  
+    
+    
+      
+  
+      
+      
+      row.appendChild(idCell)
+      
+      row.appendChild(categoryCell);
+      
+      
+  
+      
+      tableBody.appendChild(row);
+       localStorage.setItem('MessageId',item.id); 
+    })
+  }
   
   function parseJwt (token) {
     var base64Url = token.split('.')[1];
@@ -301,143 +352,18 @@ async function ShowMessage() {
   window.location.href="./creatgroup.html";
   
  }
- 
-async function ShowGroups() {
+ function addMember() {
+  window.location.href="./addmembers.html";
   
   
+ }
+ function RemoveMembers() {
+  window.location.href="./RemoveMembers.html";
+  
+ }
 
-  
-  const token = localStorage.getItem('token');
-  const decode = parseJwt(token);
-    console.log(decode.userId);
-
-  
-  
-
-  try {
-    const response = await axios.get(`http://localhost:3000/Showgroupes/${decode.userId}`, {
-      headers: {
-        'Authorization': token
-      }
-    });
     
-    const obj4 = response.data.data;
-  
-    
-    
-
-
-
-    console.log(obj4);
-
-    console.log(obj4);
-    showonGroups(obj4);
     // Perform any further operations with the response data
-  } catch (error) {
-    console.error(error);
-    // Handle the error appropriately
-  }
-} 
- function showonGroups(obj4){
-  
-  console.log(obj4);
-  const token = localStorage.getItem('token');
-  const decode = parseJwt(token);
-  
-    
-    
-  
-    
-  
-    const tableBody = document.getElementById('ChatTableBody');
-    
-     
-    
-    
-  
-    
-    tableBody.innerHTML = '';
-  
-    
-    obj4.forEach((item) => {
-      
-      
-      
-       textName = document.createTextNode(item.GroupName)
-       h1 = document.createElement('h3');
-       h1.appendChild(textName);
-
-      
-      const row = document.createElement('tr');
-  
-      
-      const idCell = document.createElement('td');
-      
-      const actionsCell = document.createElement('td');
-      const OpenBtn = document.createElement('button')
-      
-      OpenBtn.classList.add('button');
-      
-      OpenBtn.classList.add('space');
-      OpenBtn.textContent = 'Open';
-
-      actionsCell.appendChild(OpenBtn);
-      
-      OpenBtn.addEventListener('click', () => {
-        OpenGroup(item.groupId ,item.isAdmin
-);
-        console.log(item);
-  
-    });
-    
-
-      const deleteBtn = document.createElement('button')
-      deleteBtn.classList.add('button');
-      deleteBtn.textContent = 'Delete';
-      actionsCell.appendChild(deleteBtn);
-      deleteBtn.addEventListener('click', () => {
-        deleteItem(item);
-        console.log(item);
-  
-    });
-
-    
-  
-      
-      
-      
-      idCell.appendChild(h1);
-      actionsCell.appendChild(deleteBtn);
-  
-      
-  
-  
-  
-    
-    
-      
-  
-      
-      
-      row.appendChild(idCell)
-      row.appendChild(actionsCell)
-      
-    
-      
-      
-  
-      
-      tableBody.appendChild(row);
-       
-    })
-  }
-  function OpenGroup(GROUPID ,isAdmin) {
-  localStorage.setItem('groupId',GROUPID);
-  localStorage.setItem('isAdmin',isAdmin);
-  window.location.href="./openGeoup.html";
-    
-  }
-
 
 </script>
 

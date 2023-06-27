@@ -31,9 +31,12 @@ router.get('/password/resetpassword/:id',forgotController.ResetPass);
 router.get('/password/updatepassword/:resetpasswordid', forgotController.updatepassword);
 router.get('/list',usersController.onlineUser);
 router.get('/logout',usersController.logout);
-router.post('/addMessage',userauthenticate.authenticate,usersController.postMessage);  
-router.get('/ShowMessage/:messageId',userauthenticate.authenticate,usersController.ShowMessage);
-
+router.post('/addMessage/:groupId',userauthenticate.authenticate,usersController.postMessage);  
+router.get('/ShowMessage/:messageId/:groupId',userauthenticate.authenticate,usersController.ShowMessage);
+router.post('/addGroup',userauthenticate.authenticate,usersController.creatgroup);
+router.get('/Showgroupes/:userId',userauthenticate.authenticate,usersController.showgroups);  
+router.post('/addMember',userauthenticate.authenticate,usersController.addMember);
+router.delete('/RemoveMember/:MemberName2/:GroupName2',usersController.removeMember);
 
     
 

@@ -16,6 +16,9 @@ const cors = require('cors');
 const sequelize = require('./database');
 const User = require('./User');
 const Message = require('./mrssages');
+const usergrops = require('./Usergroups');
+const groups = require('./groups');
+
 
 
 const forgotPassword = require('./forgotPassword');
@@ -87,6 +90,11 @@ app.use(express.json());
 forgotPassword.belongsTo(User);
 User.hasMany(Message);
 Message.belongsTo(User);
+User.belongsToMany(groups,{ through:usergrops});
+groups.belongsToMany(User,{through:usergrops});
+groups.hasMany(Message);
+Message.belongsTo(groups);
+
 app.use((req ,res) =>{
   res.sendFile(path.join(__dirname,`${req.url}`));
 
@@ -107,6 +115,7 @@ sequelize.sync().then((result) => {
    app.listen(3000);
 }).catch((err) => {
   console.log(err)
+  
   
 });
 
