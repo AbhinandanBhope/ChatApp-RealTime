@@ -51,7 +51,7 @@ const postUser = async function (req, res, next) {
 function generateToken(id ) {
   return jwt.sign({userId:id } ,'key')
 }
-var userId =0;
+var userId =undefined;
 const logout = async function (req ,res ,next) {
   try {
     
@@ -147,15 +147,18 @@ const LoginUser = async function (req, res, next) {
 const onlineUser =  async function(req, res)  {
   try{
   
-    await User.findAll({
-      where:{ active: true}
-    }).then((result) => {
-      const rows = result; 
-      res.json(rows);
+    const g = req.params.GroupId;
+    const dtat5 = await usergroup1.findAll({
+      where:{ GroupId: g}
+    })
       
-    })}
+      res.status(201).json({dtat5});
+      console.log(dtat5);
+      
+  }
   
     catch(err)  {
+      res.status(500);
       console.log(err)
       
     };
@@ -356,7 +359,7 @@ const addMember = async function (req, res, next) {
     
     const data4 = await usergroup1.findAll({
       where:{ 
-        userId: UserM[0].id ,
+        userId: userId ,
         groupId: GroupN
       }
     })
@@ -413,7 +416,7 @@ const removeMember = async function (req, res, next) {
     })  
     const data4 = await usergroup1.findAll({
       where:{ 
-        userId: UserMd[0].id ,
+        userId: userId,
         groupId: GroupN1
       }
     })
@@ -448,11 +451,71 @@ const removeMember = async function (req, res, next) {
   }
 };
 
+    
+const addAdmin = async function (req, res, next) {
+  const transaction = await sequelize.transaction();
+  const GroupN =req.body.GroupName1;
+  const uName = req.body.MemberName1;
+  console.log(GroupN);
+  
+  try {
+ 
+    const UserM = await User.findAll({
+      where:{ Name: uName}
+      
+    })  
+      console.log( UserM);
+    
+    
+    
+
+    if (uName.length==0 || GroupN == null) {
+      res.status(401).json({ error: 'User Not found' });
+    }
+    const gObj = await Groups.findAll({
+      where:{ id: GroupN}
+      
+    })  
+    
+    console.log("myObj "+gObj[0].groupName);
+    
+    const data4 = await usergroup1.findAll({
+      where:{ 
+        userId: userId ,
+        groupId: GroupN
+      }
+    })
+  if(data4.isAdmin == false){
+    res.status(402);
+  }
+    const data = await usergroup1.update(
+      { isAdmin:true },
+      { where: { userId: UserM[0].id,
+        groupId:GroupN
+
+      } }
+    
+       , { transaction });
+    await transaction.commit();
+    
+
+    
+    
+
+    res.status(201).json({ data });
+  } catch (err) {
+    console.log(err);
+    await transaction.rollback();
+
+    res.status(500).json({ error: 'An error occurred while creating a user' });
+  }
+};
+
 
 
 
 
 module.exports = {
-  postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage ,creatgroup ,showgroups ,addMember ,removeMember
+  postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage ,creatgroup ,showgroups ,addMember ,removeMember, addAdmin
   
 };

@@ -81,11 +81,13 @@
   <button onclick="Showdownload()" class="btn btn-outline-success "id="downloadexpense"></button>
   <button type="button" id="Show" class="btn btn-outline-success"></button>
   <br><br>
-  Group Members
-  <div id="box" class="box">
-    
-  </div>
+  
+  
   <br>
+  <H1>Group members</H1>
+<div id="box" class="box">
+  
+</div>
 
   
   <br><br>
@@ -109,7 +111,7 @@
       <input id="MemberName" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" placeholder="">
     </div>
     
-  <input type="submit" class="button" value="Remove Member" onclick="RemoveMembers()">
+  <input type="submit" class="button" value="Make Admin" onclick="addAdmin()">
   </table>
 </div>
 
@@ -122,39 +124,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   showonlineUsers();
-   async function RemoveMembers() {
-    const GroupName2= localStorage.getItem('groupId');
-    console.log(GroupName2);
-        
-  const MemberName2 = document.getElementById('MemberName').value;
-  console.log(MemberName2);
-  const objMember = {
-    MemberName2,
-    GroupName2 
-
-  };
-  const token = localStorage.getItem('token');
-
-  try {
-    const response = await axios.delete(`http://localhost:3000/RemoveMember/${MemberName2}/${GroupName2}`
-);
-    
-    const obj2 = response.data;
-    console.log(obj2);
-    window.location.href="./loginsuccess.html";
-    
-    // Perform any further operations with the response data
-  } catch (error) {
-    
-    if(res.status == 402){
-      alert('U are not admin');
-    }
-    console.error(error);
-    // Handle the error appropriately
-  }
-}
-  
-async function showonlineUsers() {
+  async function showonlineUsers() {
     const GroupId =   localStorage.getItem('groupId');
     console.log(GroupId);
     
@@ -205,16 +175,49 @@ async function showonlineUsers() {
   
 })
 .catch(error => {
-  if (error.response && error.response.status === 500) {
-    alert(`User not found or  he is not part of group`);
-    
-  } 
-
   
   console.log(error);
 });
   }
   
+   async function addAdmin() {
+    const GroupName1 = localStorage.getItem('groupId');
+    console.log(GroupName1);
+        
+  const MemberName1 = document.getElementById('MemberName').value;
+  console.log(MemberName1);
+  const objMember = {
+    MemberName1,
+    GroupName1 
+
+  };
+  const token = localStorage.getItem('token');
+
+  try {
+    const response = await axios.post('http://localhost:3000/addAdmin', objMember, {
+      headers: {
+        'Authorization': token
+      }
+    });
+    
+    const obj2 = response.data;
+    console.log(obj2);
+    window.location.href="./loginsuccess.html";
+    
+    // Perform any further operations with the response data
+  } catch (error) {
+    if (error.response && error.response.status === 402) {
+    alert(`User not found or  he is already admin of group`);
+    
+  } 
+      
+    
+    console.error(error);
+    // Handle the error appropriately
+  }
+}
+    
+
 
 
 </script>

@@ -29,7 +29,7 @@ router.get('/login/:Name/:password/:gmail', usersController.LoginUser);
 router.get('/password/forgotpassword/:Gmail',userauthenticate.authenticate,forgotController.ForgotPass)
 router.get('/password/resetpassword/:id',forgotController.ResetPass);
 router.get('/password/updatepassword/:resetpasswordid', forgotController.updatepassword);
-router.get('/list',usersController.onlineUser);
+router.get('/list/:GroupId',usersController.onlineUser);
 router.get('/logout',usersController.logout);
 router.post('/addMessage/:groupId',userauthenticate.authenticate,usersController.postMessage);  
 router.get('/ShowMessage/:messageId/:groupId',userauthenticate.authenticate,usersController.ShowMessage);
@@ -37,8 +37,7 @@ router.post('/addGroup',userauthenticate.authenticate,usersController.creatgroup
 router.get('/Showgroupes/:userId',userauthenticate.authenticate,usersController.showgroups);  
 router.post('/addMember',userauthenticate.authenticate,usersController.addMember);
 router.delete('/RemoveMember/:MemberName2/:GroupName2',usersController.removeMember);
-
-    
+router.post('/addAdmin',userauthenticate.authenticate,usersController.addAdmin);
 
 /*router.get('/delete/:Id', (req, res) => {
   const id1 = req.params.Id;

@@ -75,7 +75,7 @@
 <div class="a"></div>
 <center>
   <button onclick="CreatGroup()" class="btn btn-outline-success "id="downloadexpense">CreatGroup</button>
-  <button type="button" id="Admin" onclick="UserExpense(event)" class="btn btn-outline-success">Make Admin</button>
+  <button type="button" id="Admin" onclick="admin()" class="btn btn-outline-success">Make Admin</button>
   <button onclick="RemoveMembers()" type="button" id="Remove" class="btn btn-outline-success">Remove Members</button>
 
   <div class ="space"></div>
@@ -135,7 +135,8 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
-  showonlineUsers()
+ 
+ showonlineUsers();
 
   ShowMessage();
   //setInterval(() => {
@@ -145,11 +146,14 @@
  
   
   async function showonlineUsers() {
+    const GroupId =   localStorage.getItem('groupId');
+    console.log(GroupId);
+    
       
-      axios.get('http://localhost:3000/list')
+      axios.get(`http://localhost:3000/list/${GroupId}`)
 .then(response => {
   
-  const obj2 = response.data;
+  const obj2 = response.data.dtat5;
   
   console.log(obj2);
 
@@ -167,7 +171,7 @@
             
   
               const li = document.createElement('h4');
-              const iTEMMS = document.createTextNode( i+" "+item.Name );
+              const iTEMMS = document.createTextNode( i+" "+item.memberName );
   
               i++;
   
@@ -361,7 +365,9 @@ function showonPage(obj2){
   window.location.href="./RemoveMembers.html";
   
  }
-
+function admin() {
+  window.location.href="./admin.html";
+}
     
     // Perform any further operations with the response data
 

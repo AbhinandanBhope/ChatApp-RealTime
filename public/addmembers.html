@@ -121,6 +121,63 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+  showonlineUsers();
+  async function showonlineUsers() {
+    const GroupId =   localStorage.getItem('groupId');
+    console.log(GroupId);
+    
+      
+      axios.get(`http://localhost:3000/list/${GroupId}`)
+.then(response => {
+  
+  const obj2 = response.data.dtat5;
+  
+  console.log(obj2);
+
+
+  
+  const box2 = document.getElementById('box');
+         box2.innerHTML = '';
+         if (box2.style.display === 'none') {
+          box2.style.display = 'block';
+        } 
+          let i =1;
+          obj2.forEach(item => {
+           
+          
+            
+  
+              const li = document.createElement('h4');
+              const iTEMMS = document.createTextNode( i+" "+item.memberName );
+  
+              i++;
+  
+  
+              
+              
+              
+              
+              
+              const Space = document.createElement('div');
+              Space.classList.add =("distance")
+              li.appendChild(iTEMMS);
+              
+              
+              
+              
+             
+              li.appendChild(Space);
+              box2.appendChild(li);
+              
+          }); 
+  
+})
+.catch(error => {
+  
+  console.log(error);
+});
+  }
+  
    async function addMembers() {
     const GroupName1 = localStorage.getItem('groupId');
     console.log(GroupName1);
@@ -147,10 +204,10 @@
     
     // Perform any further operations with the response data
   } catch (error) {
-    if (res.status == 402) {
-      alert('Ur not admin')
-      
-    }
+    if (error.response && error.response.status === 500) {
+    alert(`User not found or  he is  part of group`);
+    
+  } 
     console.error(error);
     // Handle the error appropriately
   }
