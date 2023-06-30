@@ -51,13 +51,13 @@ const postUser = async function (req, res, next) {
 function generateToken(id ) {
   return jwt.sign({userId:id } ,'key')
 }
-var userId =undefined;
+
 const logout = async function (req ,res ,next) {
   try {
     
     const activeUpdate = await User.update(
       { active: false }, 
-      { where: { id: userId } }
+      { where: { id: req.userId } }
     );
     console.log(activeUpdate);
     
@@ -171,7 +171,7 @@ const postMessage = async function (req, res, next) {
   
   try {
     const groupId = req.params.groupId;
-    const u = userId;
+    const u =  req.user.id;
     const UserM = await User.findAll({
       where:{ id: u}
       
@@ -216,7 +216,7 @@ const ShowMessage = async function (req, res, next) {
   const messageId = req.params.messageId;
   const gropid = req.params.groupId;
   try {
-    const u2 = userId;
+    const u2 = req.user.id;
   
     
 
@@ -255,7 +255,7 @@ const creatgroup = async function (req, res, next) {
   const transaction = await sequelize.transaction();
   
   try {
-    const u = userId;
+    const u = req.user.id;
     const UserM = await User.findAll({
       where:{ id: u}
       
@@ -307,7 +307,7 @@ const showgroups = async function (req, res, next) {
   
   const messageId = req.params.messageId;
   try {
-    const u2 = userId;
+    const u2 = req.user.id;
     
     
 
@@ -359,7 +359,7 @@ const addMember = async function (req, res, next) {
     
     const data4 = await usergroup1.findAll({
       where:{ 
-        userId: userId ,
+        userId: req.user.id ,
         groupId: GroupN
       }
     })
@@ -416,7 +416,7 @@ const removeMember = async function (req, res, next) {
     })  
     const data4 = await usergroup1.findAll({
       where:{ 
-        userId: userId,
+        userId: req.user.id,
         groupId: GroupN1
       }
     })
@@ -481,7 +481,7 @@ const addAdmin = async function (req, res, next) {
     
     const data4 = await usergroup1.findAll({
       where:{ 
-        userId: userId ,
+        userId: req.user.id ,
         groupId: GroupN
       }
     })

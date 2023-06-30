@@ -58,7 +58,7 @@
           
           
         
-
+    
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
   
   
@@ -132,9 +132,13 @@
 
    
 </center>
+<script src="/socket.io/socket.io.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
+  
+  const socket = io();
  
  showonlineUsers();
 
@@ -144,7 +148,38 @@
     
  // }, 3000);
  
+ socket.on("message", (message, groupId5, userId , Name) => {
   
+  const groupId4 = localStorage.getItem('groupId');
+  if(groupId4 == groupId5 ){
+     
+    const tableBody = document.getElementById('ChatTableBody');
+    
+  console.log('Received message:', message);
+  
+  console.log('User ID:', userId);
+  const row = document.createElement('tr');
+  
+      
+  const idCell = document.createElement('td');
+  textName = document.createTextNode(Name)
+  idCell.appendChild(textName);
+  
+  const categoryCell = document.createElement('td');
+      
+      const category = document.createTextNode(message)
+      
+      categoryCell.appendChild(category);
+
+      row.appendChild(idCell)
+      
+      row.appendChild(categoryCell);
+tableBody.appendChild(row);
+  alert('hi');
+  console.log("aaa");
+  }
+  // Handle the received message and perform any necessary actions
+});
   async function showonlineUsers() {
     const GroupId =   localStorage.getItem('groupId');
     console.log(GroupId);
@@ -220,9 +255,10 @@
       }
     });
     
-    const obj2 = response.data;
+    const obj2 = response.data.data;
     console.log(obj2);
     ShowMessage();
+    socket.emit('message', obj2)
     // Perform any further operations with the response data
   } catch (error) {
     console.error(error);
@@ -231,6 +267,11 @@
 }
 
 async function ShowMessage() {
+  const groupId1 = localStorage.getItem('groupId');
+  
+
+  
+    
   const admin = JSON.parse(localStorage.getItem('isAdmin'));
   console.log(admin);
   if( admin == false ){

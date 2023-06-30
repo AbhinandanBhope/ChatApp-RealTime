@@ -136,8 +136,11 @@
   const token = localStorage.getItem('token');
 
   try {
-    const response = await axios.delete(`http://localhost:3000/RemoveMember/${MemberName2}/${GroupName2}`
-);
+    const response = await axios.delete(`http://localhost:3000/RemoveMember/${MemberName2}/${GroupName2}`,  {headers: {
+        'Authorization': token
+      }
+    });
+
     
     const obj2 = response.data;
     console.log(obj2);

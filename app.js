@@ -4,11 +4,16 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-const compression = require('compression');
+
 
 //const Sequelize = require('./database');
-const app = express();
 
+
+const socketio = require('socket.io');
+const app = express();
+ 
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 //app.use(cors())
 
 const adminRoutes = require('./routes/admin');
@@ -24,13 +29,14 @@ const groups = require('./groups');
 const forgotPassword = require('./forgotPassword');
 
 const routes =require('./routes/admin');
+
 app.use(routes);
 
 app.use(cors({
   origin:"*",
   credentials:true,
   methods: "GET, POST, PUT, DELETE"
-}));
+})); 
 
 
 //app.use(morgan('combined'));
@@ -109,23 +115,62 @@ app.use((req ,res) =>{
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
-sequelize.sync().then((result) => {
 
-  console.log(result)
-   app.listen(3000);
-}).catch((err) => {
-  console.log(err)
+
+  io.on("connection", (socket) => {
+    try {
+      socket.on("message", (obj2) => {
+        console.log("emit");
+        console.log(obj2);
+        socket.broadcast.emit("message", obj2.Message, obj2.groupId,obj2.userId, obj2.Name);
+      });
+    //  socket.on("file", (msg, username,id) => {
+      //  console.log("file")
+       // socket.broadcast.emit("file", msg, username,id);
+     // });
+    } catch (err) {
+      console.log(err);
+    }
+  });
   
-  
+
+
+
+
+
+
+
+
+   
+    
+sequelize
+.sync(
+// {force:true}
+)
+.then(http.listen(3000))
+.catch((err) => {
+  console.log(err);
 });
 
 
 
+  
 
 
-    
-   
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

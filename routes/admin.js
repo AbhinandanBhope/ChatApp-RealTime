@@ -36,7 +36,7 @@ router.get('/ShowMessage/:messageId/:groupId',userauthenticate.authenticate,user
 router.post('/addGroup',userauthenticate.authenticate,usersController.creatgroup);
 router.get('/Showgroupes/:userId',userauthenticate.authenticate,usersController.showgroups);  
 router.post('/addMember',userauthenticate.authenticate,usersController.addMember);
-router.delete('/RemoveMember/:MemberName2/:GroupName2',usersController.removeMember);
+router.delete('/RemoveMember/:MemberName2/:GroupName2',userauthenticate.authenticate ,usersController.removeMember);
 router.post('/addAdmin',userauthenticate.authenticate,usersController.addAdmin);
 
 /*router.get('/delete/:Id', (req, res) => {
