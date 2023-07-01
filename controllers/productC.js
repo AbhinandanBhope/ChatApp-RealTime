@@ -8,6 +8,9 @@ const jwt = require('jsonwebtoken');
 const sequelize = require('../database');
 require('dotenv').config();
 
+const AWS = require("aws-sdk");
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 
@@ -510,6 +513,65 @@ const addAdmin = async function (req, res, next) {
     res.status(500).json({ error: 'An error occurred while creating a user' });
   }
 };
+async function sendfile(req, res) {
+  upload.single("file")(req, res, async (err) => {
+    const t = await sequelize.transaction();
+    try {
+      const userId = req.user.id;
+      const filename = "File" + userId + "/" + Date.now() + req.file.originalname;
+      const fileURL = await uploadToS3(req.file.buffer, filename);
+      const groupId3 = req.params.groupid;
+      console.log("GroupId"+ groupId3)
+      await Message.create(
+        {
+          
+          
+          Message: fileURL,
+          Name: req.user.Name,
+          userId: userId,
+        
+          groupId: groupId3
+
+
+        },
+        { transaction: t }
+      );
+      await t.commit();
+      res.status(200).json({ data: fileURL, username: req.user.name, success: true });
+    } catch (err) {
+      await t.rollback();
+      console.log(err);
+      res.status(500).json({ message: "Something went wrong" });
+    }
+  });
+}
+
+async function uploadToS3(data, fileName) {
+  try {
+    const BUCKET_NAME = process.env.BUCKET_NAME;
+    const IAM_USER_KEY = process.env.IAM_USER_KEY;
+    const IAM_USER_SECRET = process.env.IM_USER_SECRET;
+    const s3Bucket = new AWS.S3({
+      accessKeyId: IAM_USER_KEY,
+      secretAccessKey: IAM_USER_SECRET
+    });
+
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+      Body: data,
+      ACL: 'public-read'
+    };
+
+    const response = await s3Bucket.upload(params).promise();
+    console.log('SUCCESS', response);
+    return response.Location;
+  } catch (error) {
+    console.log('Something went wrong', error);
+    throw error;
+  }
+}
+
 
 
 
@@ -517,5 +579,5 @@ const addAdmin = async function (req, res, next) {
 
 module.exports = {
   postUser, LoginUser  ,  onlineUser , logout ,postMessage ,ShowMessage ,creatgroup ,showgroups ,addMember ,removeMember, addAdmin
-  
+  ,sendfile
 };

@@ -11,7 +11,7 @@ const Message = sequelize.define('Messages',{
     
     
     Message: {
-        type:Sequelize.STRING,
+        type:Sequelize.STRING(5000),
         allowNull: false,
          // Make Gmail column unique
       },

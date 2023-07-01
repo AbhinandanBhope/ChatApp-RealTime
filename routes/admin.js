@@ -38,7 +38,7 @@ router.get('/Showgroupes/:userId',userauthenticate.authenticate,usersController.
 router.post('/addMember',userauthenticate.authenticate,usersController.addMember);
 router.delete('/RemoveMember/:MemberName2/:GroupName2',userauthenticate.authenticate ,usersController.removeMember);
 router.post('/addAdmin',userauthenticate.authenticate,usersController.addAdmin);
-
+router.post('/group/sendfile/:groupid',userauthenticate.authenticate,usersController.sendfile);
 /*router.get('/delete/:Id', (req, res) => {
   const id1 = req.params.Id;
   User.destroy({where:{Id:id1}}).then((result) => {

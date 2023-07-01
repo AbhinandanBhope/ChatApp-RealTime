@@ -112,6 +112,12 @@
 
 </div>
 
+<form id="form2" enctype="multipart/form-data">
+  <input class="custom-file-input" name="file" type="file" id="sendfileinpu">
+  <button onclick="sendfile(event)" class="sendbutt" id="sendbuttfile" type="submit">
+      Send
+  </button>
+</form>
 
 
     </tbody>
@@ -389,6 +395,35 @@ function showonPage(obj2){
   
     return JSON.parse(jsonPayload);
   }
+  async function sendfile(e) {
+    const token = localStorage.getItem('token');
+    
+        const groupid = localStorage.getItem("groupId")
+        e.preventDefault()
+        const fileInput = document.querySelector("#sendfileinpu")
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const config = {
+            url: "http://localhost:3000/group/sendfile/" + groupid,
+            method: "POST",
+            data: formData,
+            headers: {
+        'Authorization': token
+      }
+        }
+        axios(config)
+
+        try {
+    const response = await axios(config); // Use axios library to send the request
+    console.log("Response:", response);
+    ShowMessage();
+   // socket.emit('message', obj2)
+  } catch (error) {
+    console.error("Error:", error);
+  }
+        
+      }
   
   
 
