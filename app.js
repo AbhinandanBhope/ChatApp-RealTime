@@ -6,6 +6,7 @@ const path = require('path');
 
 
 
+
 //const Sequelize = require('./database');
 
 
@@ -23,7 +24,9 @@ const User = require('./User');
 const Message = require('./mrssages');
 const usergrops = require('./Usergroups');
 const groups = require('./groups');
+const Archived =require('./ArchivedChat');
 
+const CronJob = require("cron").CronJob;
 
 
 const forgotPassword = require('./forgotPassword');
@@ -133,7 +136,37 @@ app.use(bodyParser.urlencoded({ extended: true }));
     }
   });
   
-
+ const job = new CronJob(
+  "0 36 3 * * *",
+    async function () {
+      const t = await sequelize.transaction();
+  
+      try {                                                          
+        const data = await Message.findAll();
+        data.forEach(async (element) => {
+          await Archived.create(
+            {
+              
+              Message : element.Message,
+              Name: element.Name,
+              userId: element.userId,
+              groupId: element.groupId,
+            },
+            { transaction: t }
+          );
+        });
+        await Message.destroy({ where: {} }, { transaction: t });
+        await t.commit();
+      } catch (err) {
+        await t.rollback();
+  
+        console.log(err);
+      }
+    },
+    null,
+    true
+  ); 
+  
 
 
 
