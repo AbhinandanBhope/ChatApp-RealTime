@@ -176,20 +176,18 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
    
     
-sequelize
+/*sequelize
 .sync(
-// {force:true}
+ {force:true}
 )
 .then(http.listen(3000))
 .catch((err) => {
   console.log(err);
-});
+}); */
 
 
 
-  
-
-
+app.listen(3000)
 
 
 
